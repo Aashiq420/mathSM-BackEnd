@@ -30,10 +30,10 @@ init_sqlite_db()
 
 app = Flask(__name__)
 
-@app.route('/')
-def landing_page():
-    msg = "successful"
-    return msg
+# @app.route('/')
+# def landing_page():
+#     msg = "successful"
+#     return msg
 
 @app.route('/main/', methods=['GET'])
 def main_page():
@@ -45,7 +45,8 @@ def main_page():
         cur.execute("SELECT * FROM users WHERE name=? AND password=?", (username, password))
         cur.fetchall()
         con.commit()
-        return render_template('index.html')
+        msg = "All records Processed"
+        return msg
 
 # @app.route('/register/')
 # def register():
@@ -69,3 +70,7 @@ def add_item():
             post_data = request.get_json()
 
             firstname = post_data['firstname']
+        except:
+            print("error")
+        finally:
+            pass
