@@ -1,6 +1,6 @@
 import sqlite3
-from flask import Flask, render_template, request, jsonify
-from flask import request
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 def init_sqlite_db():
     conn = sqlite3.connect('database.db')
@@ -32,8 +32,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def landing_page():
-    msg = "successful"
-    return msg
+    with sqlite3.connect("database.db") as conn:
+        conn.row_factory = dict_factory
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users")
+        data = cursor.fetchall()
+    return jsonify(data)
 
 @app.route('/main/', methods=['GET'])
 def main_page():
