@@ -7,16 +7,19 @@ def init_sqlite_db():
     c=conn.cursor()
     print("Opened database successfully")
 
-    c.execute("""CREATE TABLE IF NOT EXISTS users 
-    (user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
-    full_name TEXT, 
-    username TEXT, 
-    email TEXT, 
-    password TEXT);""")
+    c.execute("""  CREATE TABLE IF NOT EXISTS "users" (
+	"user_id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	"full_name"	TEXT NOT NULL,
+	"username"	TEXT NOT NULL,
+	"email"	TEXT NOT NULL,
+	"password"	TEXT NOT NULL);""")
+
+  
+
     print("Table created successfully")
 
-    c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash1','adams.aashiq@gmail.com','letmein');""")
-    c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
+    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash1','adams.aashiq@gmail.com','letmein');""")
+    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
 
     print("user added")
 
