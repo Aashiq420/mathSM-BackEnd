@@ -30,14 +30,14 @@ init_sqlite_db()
 
 app = Flask(__name__)
 
-# @app.route('/')
-# def landing_page():
-#     msg = "successful"
-#     return msg
+@app.route('/')
+def landing_page():
+    msg = "successful"
+    return msg
 
 @app.route('/main/', methods=['GET'])
 def main_page():
-    username = request.form['usernname']
+    username = request.form['username']
     pasword = request.form['password']
 
     with sqlite3.connect('database.db') as con:
@@ -57,9 +57,6 @@ def main_page():
 #     data = fullname, username, email, password
 #     print(data)
 #     return render_template('register.html')
-
-    
-
 
 #where there is a post:
 @app.route('/route/', methods=['POST','PUT','DELETE'])
