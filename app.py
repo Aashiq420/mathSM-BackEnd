@@ -18,8 +18,8 @@ def init_sqlite_db():
 
     print("Table created successfully")
 
-    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash1','adams.aashiq@gmail.com','letmein');""")
-    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
+    c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash1','adams.aashiq@gmail.com','letmein');""")
+    c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
 
     print("user added")
 
