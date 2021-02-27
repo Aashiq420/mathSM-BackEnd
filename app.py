@@ -30,6 +30,13 @@ init_sqlite_db()
 
 app = Flask(__name__)
 
+app.config["DEBUG"] = True
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
 @app.route('/')
 def landing_page():
     with sqlite3.connect("database.db") as conn:
