@@ -18,8 +18,9 @@ def init_sqlite_db():
 
     print("Table created successfully")
 
-    c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash1','adams.aashiq@gmail.com','letmein');""")
-    c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
+    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
+    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Vinsmoke Sanji','sanji','ladiesman@mugiwara.com','diablejamble');""")
+    conn.commit()
 
     print("user added")
 
@@ -32,7 +33,9 @@ def init_sqlite_db():
 init_sqlite_db()
 
 app = Flask(__name__)
+CORS(app)
 
+#function to convert database data to dictionary (i think)
 app.config["DEBUG"] = True
 def dict_factory(cursor, row):
     d = {}
@@ -40,7 +43,8 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-@app.route('/')
+#landing page using flask
+@app.route('/landing/', methods=['GET'])
 def landing_page():
     with sqlite3.connect("database.db") as conn:
         conn.row_factory = dict_factory
