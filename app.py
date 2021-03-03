@@ -65,13 +65,14 @@ def add_new_record():
             password = post_data['password']
             data = fullname, username, email, password
             print(data)
-            with sqlite3.connect('database.db') as con:
-                con.row_factory = dict_factory
-                cur = con.cursor()
-                cur.execute("""INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?);""", (fullname, username, email, password))
-                con.commit()
-                msg = "Record successfully added."
-                print(msg)
+
+            con = sqlite3.connect('database.db')
+            con.row_factory = dict_factory
+            cur = con.cursor()
+            cur.execute("""INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?);""", (fullname, username, email, password))
+            con.commit()
+            msg = "Record successfully added."
+            print(msg)
         except Exception as e:
             con.rollback()
             msg = "Error occurred in insert operation: " + e
