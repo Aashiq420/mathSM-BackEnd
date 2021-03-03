@@ -80,6 +80,34 @@ def add_new_record():
             con.close()
             return jsonify(msg = msg)
 
+#sign in if user in database
+@app.route('/user-login/' , methods=["GET"])
+def login_user():
+    if request.method == 'GET':
+        response = {}
+        response['msg'] = None
+        response['body'] = []
+
+        try:
+            # get_data = request.get_json()
+            # username = get_data['username']
+            # password = get_data['password']
+
+            with sqlite3.connect('database.db') as conn:
+                conn.row_factory = dict_factory
+                cur = conn.cursor()
+                cur.execute("SELECT * FROM owner_table'")
+                conn.commit()
+                response['body'] = cur.fetchall()
+                response['msg'] = "user logged in successfully."
+
+        except Exception as e:
+            conn.rollback()
+            response['msg'] = "Something went wrong while verifying a record: " + str(e)
+
+        finally:
+            return response
+
 # @app.route('/main/', methods=['GET'])
 # def main_page():
 #     username = request.form['username']
