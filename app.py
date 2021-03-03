@@ -1,7 +1,10 @@
 import sqlite3
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
+app = Flask(__name__)
+CORS(app)
+#create database
 def init_sqlite_db():
     conn = sqlite3.connect('database.db')
     c=conn.cursor()
@@ -22,8 +25,6 @@ def init_sqlite_db():
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Vinsmoke Sanji','sanji','ladiesman@mugiwara.com','diablejamble');""")
     conn.commit()
 
-    print("user added")
-
     c.execute("""SELECT * FROM users;""")
     row = c.fetchall()
     for i in range(len(row)):
@@ -31,9 +32,6 @@ def init_sqlite_db():
     conn.close()
 
 init_sqlite_db()
-
-app = Flask(__name__)
-CORS(app)
 
 #function to convert database data to dictionary (i think)
 app.config["DEBUG"] = True
@@ -51,20 +49,51 @@ def landing_page():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users")
         data = cursor.fetchall()
-    return jsonify(data)
+    return jsonify(data)#render_template('landing.html')
 
-@app.route('/main/', methods=['GET'])
-def main_page():
-    username = request.form['username']
-    pasword = request.form['password']
 
-    with sqlite3.connect('database.db') as con:
-        cur = con.cursor()
-        cur.execute("SELECT * FROM users WHERE name=? AND password=?", (username, password))
-        cur.fetchall()
-        con.commit()
-        msg = "All records Processed"
-        return msg
+# Add new record
+@app.route('/register/', methods=['POST'])
+def add_new_record():
+    if request.method == "POST":
+        msg = None
+        try:
+            post_data = request.get_json()
+            fullname = post_data['fullname']
+            username = post_data['username']
+            email = post_data['email']
+            password = post_data['password']
+            data = fullname, username, email, password
+            print(data)
+            with sqlite3.connect('database.db') as con:
+                con.row_factory = dict_factory
+
+                cur = con.cursor()
+                cur.execute("INSERT INTO users (full_name, username, email, password)VALUES (?, ?, ?, ?)", (fullname, username, email, password))
+                con.commit()
+                msg = "Record successfully added."
+                print(msg)
+        except Exception as e:
+            return {'error': str(e)}
+            # con.rollback()
+            # msg = "Error occurred in insert operation: " + e
+            # print(msg)
+        finally:
+            con.close()
+            return {'msg': msg}
+
+# @app.route('/main/', methods=['GET'])
+# def main_page():
+#     username = request.form['username']
+#     pasword = request.form['password']
+
+#     with sqlite3.connect('database.db') as con:
+#         cur = con.cursor()
+#         cur.execute("SELECT * FROM users WHERE name=? AND password=?", (username, password))
+#         cur.fetchall()
+#         con.commit()
+#         msg = "All records Processed"
+#         return msg
 
 # @app.route('/register/')
 # def register():
@@ -77,15 +106,15 @@ def main_page():
 #     return render_template('register.html')
 
 #where there is a post:
-@app.route('/route/', methods=['POST','PUT','DELETE'])
-def add_item():
-    if request.method =='POST':
-        msg = None
-        try:
-            post_data = request.get_json()
+# @app.route('/route/', methods=['POST','PUT','DELETE'])
+# def add_item():
+#     if request.method =='POST':
+#         msg = None
+#         try:
+#             post_data = request.get_json()
 
-            firstname = post_data['firstname']
-        except:
-            print("error")
-        finally:
-            pass
+#             firstname = post_data['firstname']
+#         except:
+#             print("error")
+#         finally:
+#             pass
