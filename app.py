@@ -73,13 +73,15 @@ def add_new_record():
                 msg = "Record successfully added."
                 print(msg)
         except Exception as e:
-            return {'error': str(e)}
+            con.rollback()
             # con.rollback()
-            # msg = "Error occurred in insert operation: " + e
+             msg = "Error occurred in insert operation: " + e
             # print(msg)
+            return {'error': str(e)}
+
         finally:
             con.close()
-            return {'msg': data}
+            return jsonify(msg = msg)
 
 # @app.route('/main/', methods=['GET'])
 # def main_page():
