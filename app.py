@@ -68,7 +68,7 @@ def add_new_record():
             with sqlite3.connect('database.db') as con:
                 con.row_factory = dict_factory
                 cur = con.cursor()
-                cur.execute("""INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?)""", (fullname, username, email, password))
+                cur.execute("""INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?);""", (fullname, username, email, password))
                 con.commit()
                 msg = "Record successfully added."
                 print(msg)
