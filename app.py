@@ -20,7 +20,7 @@ def init_sqlite_db():
   
 
     print("Table created successfully")
-
+    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash','adams.aashiq@gmail.com','letmein');""")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Vinsmoke Sanji','sanji','ladiesman@mugiwara.com','diablejamble');""")
     conn.commit()
@@ -68,7 +68,7 @@ def add_new_record():
             with sqlite3.connect('database.db') as con:
                 con.row_factory = dict_factory
                 cur = con.cursor()
-                cur.execute("INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?)", (fullname, username, email, password))
+                cur.execute("""INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?)""", (fullname, username, email, password))
                 con.commit()
                 msg = "Record successfully added."
                 print(msg)
