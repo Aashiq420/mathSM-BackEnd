@@ -74,11 +74,7 @@ def add_new_record():
                 print(msg)
         except Exception as e:
             con.rollback()
-            # con.rollback()
-             msg = "Error occurred in insert operation: " + e
-            # print(msg)
-            return {'error': str(e)}
-
+            msg = "Error occurred in insert operation: " + e
         finally:
             con.close()
             return jsonify(msg = msg)
