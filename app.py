@@ -42,7 +42,7 @@ def dict_factory(cursor, row):
     return d
 
 #landing page using flask
-@app.route('/landing/', methods=['GET'])
+@app.route('/user-data/', methods=['GET'])
 def landing_page():
     with sqlite3.connect("database.db") as conn:
         conn.row_factory = dict_factory
