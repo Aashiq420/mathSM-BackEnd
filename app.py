@@ -2,22 +2,13 @@ import sqlite3
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
 #create database
 def init_sqlite_db():
     conn = sqlite3.connect('database.db')
     c=conn.cursor()
     print("Opened database successfully")
 
-    c.execute("""  CREATE TABLE IF NOT EXISTS "users" (
-	"user_id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	"full_name"	TEXT NOT NULL,
-	"username"	TEXT NOT NULL,
-	"email"	TEXT NOT NULL,
-	"password"	TEXT NOT NULL);""")
-
-  
+    c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, full_name TEXT NOT NULL, username TEXT NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL);")
 
     print("Table created successfully")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash','adams.aashiq@gmail.com','letmein');""")
@@ -25,13 +16,13 @@ def init_sqlite_db():
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Vinsmoke Sanji','sanji','ladiesman@mugiwara.com','diablejamble');""")
     conn.commit()
 
-    c.execute("""SELECT * FROM users;""")
-    row = c.fetchall()
-    for i in range(len(row)):
-        print(row[i])
-    conn.close()
-
+    c.execute("SELECT * FROM users;")
+    print(c.fetchall())
+    
 init_sqlite_db()
+
+app = Flask(__name__)
+CORS(app)
 
 #function to convert database data to dictionary (i think)
 app.config["DEBUG"] = True
@@ -69,7 +60,7 @@ def add_new_record():
             con = sqlite3.connect('database.db')
             con.row_factory = dict_factory
             cur = con.cursor()
-            cur.execute("""INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?);""", (fullname, username, email, password))
+            cur.execute("INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?)", (fullname, username, email, password))
             con.commit()
             msg = "Record successfully added."
             print(msg)
@@ -89,14 +80,15 @@ def login_user():
         response['body'] = []
 
         try:
-            # get_data = request.get_json()
-            # username = get_data['username']
-            # password = get_data['password']
+            get_data = request.get_json()
+            username = get_data['username']
+            password = get_data['password']
+            print(username,password)
 
             with sqlite3.connect('database.db') as conn:
                 conn.row_factory = dict_factory
                 cur = conn.cursor()
-                cur.execute("SELECT * FROM owner_table'")
+                cur.execute("SELECT * FROM users")
                 conn.commit()
                 response['body'] = cur.fetchall()
                 response['msg'] = "user logged in successfully."
