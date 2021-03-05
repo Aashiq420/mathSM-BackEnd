@@ -16,8 +16,8 @@ def init_sqlite_db():
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Vinsmoke Sanji','sanji','ladiesman@mugiwara.com','diablejamble');""")
     conn.commit()
 
-    c.execute("SELECT * FROM users;")
-    print(c.fetchall())
+    # c.execute("SELECT * FROM users;")
+    # print(c.fetchall())
     
 init_sqlite_db()
 
@@ -40,6 +40,7 @@ def landing_page():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users")
         data = cursor.fetchall()
+        console.log(data)
     return jsonify(data)#render_template('landing.html')
 
 
@@ -91,7 +92,7 @@ def login_user():
                 cur.execute("SELECT * FROM users")
                 conn.commit()
                 response['body'] = cur.fetchall()
-                response['msg'] = "user logged in successfully."
+                response['msg'] = user+" logged in successfully."
 
         except Exception as e:
             conn.rollback()
