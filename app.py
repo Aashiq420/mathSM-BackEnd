@@ -63,7 +63,7 @@ def add_new_record():
             cur = con.cursor()
             cur.execute("INSERT INTO users (full_name, username, email, password) VALUES (?, ?, ?, ?)", (fullname, username, email, password))
             con.commit()
-            msg = "Record successfully added."
+            msg = "User "+fullname+" successfully added."
             print(msg)
         except Exception as e:
             con.rollback()
