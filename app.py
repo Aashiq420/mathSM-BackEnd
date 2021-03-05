@@ -40,7 +40,7 @@ def landing_page():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users")
         data = cursor.fetchall()
-        console.log(data)
+        print(data)
     return jsonify(data)#render_template('landing.html')
 
 
