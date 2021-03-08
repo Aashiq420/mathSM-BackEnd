@@ -10,7 +10,7 @@ def init_sqlite_db():
 
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, full_name TEXT NOT NULL, username TEXT NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL);")
 
-    c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL topic TEXT, image TEXT)")
+    # c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL topic TEXT, image TEXT)")
 
     print("Table created successfully")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash','adams.aashiq@gmail.com','letmein');""")
@@ -34,8 +34,19 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-#landing page using flask
+#fetch all users
 @app.route('/user-data/', methods=['GET'])
+def select_all():
+    with sqlite3.connect("database.db") as conn:
+        conn.row_factory = dict_factory
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users")
+        data = cursor.fetchall()
+        print(data)
+    return jsonify(data)
+
+#login check thing
+@app.route('/login-data/', methods=['GET'])
 def landing_page():
     post_data = request.get_json()
     uname = post_data['uname']
