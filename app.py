@@ -10,7 +10,7 @@ def init_sqlite_db():
 
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, full_name TEXT NOT NULL, username TEXT NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL);")
 
-    # c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL topic TEXT, image TEXT)")
+    c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, image TEXT)")
 
     print("Table created successfully")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash','adams.aashiq@gmail.com','letmein');""")
@@ -36,11 +36,22 @@ def dict_factory(cursor, row):
 
 #fetch all users
 @app.route('/user-data/', methods=['GET'])
-def select_all():
+def select_all_users():
     with sqlite3.connect("database.db") as conn:
         conn.row_factory = dict_factory
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users")
+        data = cursor.fetchall()
+        print(data)
+    return jsonify(data)
+
+#fetch all posts
+@app.route('/post-data/', methods=['GET'])
+def select_all_users():
+    with sqlite3.connect("database.db") as conn:
+        conn.row_factory = dict_factory
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM posts")
         data = cursor.fetchall()
         print(data)
     return jsonify(data)
@@ -51,6 +62,7 @@ def landing_page():
     post_data = request.get_json()
     uname = post_data['uname']
     pword = post_data['pword']
+    print(uname, pword)
 
 
     with sqlite3.connect("database.db") as conn:
@@ -59,10 +71,10 @@ def landing_page():
         cursor.execute("SELECT * FROM users WHERE username=? AND password=?",(uname,pword))
         data = cursor.fetchall()
         print(data)
-    return jsonify(data)#render_template('landing.html')
+    return jsonify(data)
 
 
-# Add new record
+# Add new user
 @app.route('/register/', methods=['POST'])
 def add_new_record():
     if request.method == "POST":
@@ -118,6 +130,35 @@ def login_user():
 
         finally:
             return response
+
+
+# Add new post
+@app.route('/create-post/', methods=['POST'])
+def add_new_record():
+    if request.method == "POST":
+        msg = None
+        try:
+            post_data = request.get_json()
+
+            title = post_data['title']
+            msg = post_data['message']
+            img = post_data['image']
+            data = title, msg, img
+            print(data)
+
+            con = sqlite3.connect('database.db')
+            con.row_factory = dict_factory
+            cur = con.cursor()
+            cur.execute("INSERT INTO posts (title, message, image) VALUES (?, ?, ?)", (title, msg, img))
+            con.commit()
+            msg = "Post successfully created."
+            print(msg)
+        except Exception as e:
+            con.rollback()
+            msg = "Error occurred in post creation: " + e
+        finally:
+            con.close()
+            return jsonify(msg = msg)
 
 # @app.route('/main/', methods=['GET'])
 # def main_page():
