@@ -48,7 +48,7 @@ def select_all_users():
 
 #fetch all posts
 @app.route('/post-data/', methods=['GET'])
-def select_all_users():
+def select_all_posts():
     with sqlite3.connect("database.db") as conn:
         conn.row_factory = dict_factory
         cursor = conn.cursor()
