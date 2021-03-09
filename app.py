@@ -135,7 +135,7 @@ def login_user():
 
 # Add new post
 @app.route('/create-post/', methods=['POST'])
-def add_new_record():
+def add_new_post():
     if request.method == "POST":
         msg = None
         try:
