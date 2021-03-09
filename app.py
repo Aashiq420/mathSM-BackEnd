@@ -9,10 +9,11 @@ def init_sqlite_db():
     print("Opened database successfully")
 
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, full_name TEXT NOT NULL, username TEXT NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL);")
+    conn.commit()
 
     c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, image TEXT)")
 
-    print("Table created successfully")
+    print("Tables created successfully")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash','adams.aashiq@gmail.com','letmein');""")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
     #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Vinsmoke Sanji','sanji','ladiesman@mugiwara.com','diablejamble');""")
