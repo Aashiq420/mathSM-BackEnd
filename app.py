@@ -11,19 +11,17 @@ def init_sqlite_db():
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, full_name TEXT NOT NULL, username TEXT NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL);")
     conn.commit()
 
-    c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, image TEXT)")
-
-    print("Tables created successfully")
-    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Aashiq Adams','ash','adams.aashiq@gmail.com','letmein');""")
-    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Roronoa Zoro','zoro','3sword@mugiwara.com','katana');""")
-    #c.execute("""INSERT INTO users (full_name, username, email, password) VALUES ('Vinsmoke Sanji','sanji','ladiesman@mugiwara.com','diablejamble');""")
+    c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, image TEXT, poster TEXT)")
     conn.commit()
 
-    # c.execute("SELECT * FROM users;")
-    # print(c.fetchall())
+    c.execute("CREATE TABLE IF NOT EXISTS comments (comment_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL, comment TEXT, comment-poster TEXT)")
+    conn.commit()
+
+    print("Tables created successfully")
+  
+    conn.commit()
     
 init_sqlite_db()
-
 app = Flask(__name__)
 CORS(app)
 
@@ -57,6 +55,17 @@ def select_all_posts():
         print(data)
     return jsonify(data)
 
+#fetch all comments
+@app.route('/comment-data/', methods=['GET'])
+def select_all_comments():
+    with sqlite3.connect("database.db") as conn:
+        conn.row_factory = dict_factory
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM comments")
+        data = cursor.fetchall()
+        print(data)
+    return jsonify(data)
+    
 #login check thing
 @app.route('/login-data/', methods=['GET'])
 def landing_page():
@@ -73,7 +82,6 @@ def landing_page():
         data = cursor.fetchall()
         print(data)
     return jsonify(data)
-
 
 # Add new user
 @app.route('/register/', methods=['POST'])
@@ -132,7 +140,6 @@ def login_user():
         finally:
             return response
 
-
 # Add new post
 @app.route('/create-post/', methods=['POST'])
 def add_new_post():
@@ -144,8 +151,6 @@ def add_new_post():
             title = post_data['title']
             msg = post_data['message']
             img = post_data['image']
-            data = title, msg, img
-            print(data)
 
             con = sqlite3.connect('database.db')
             con.row_factory = dict_factory
@@ -161,39 +166,27 @@ def add_new_post():
             con.close()
             return jsonify(msg = msg)
 
-# @app.route('/main/', methods=['GET'])
-# def main_page():
-#     username = request.form['username']
-#     pasword = request.form['password']
-
-#     with sqlite3.connect('database.db') as con:
-#         cur = con.cursor()
-#         cur.execute("SELECT * FROM users WHERE name=? AND password=?", (username, password))
-#         cur.fetchall()
-#         con.commit()
-#         msg = "All records Processed"
-#         return msg
-
-# @app.route('/register/')
-# def register():
-#     fullname = request.form['fullname']
-#     username = request.form['username']
-#     email = request.form['email']
-#     password = request.form['password']
-#     data = fullname, username, email, password
-#     print(data)
-#     return render_template('register.html')
-
-#where there is a post:
-# @app.route('/route/', methods=['POST','PUT','DELETE'])
-# def add_item():
-#     if request.method =='POST':
-#         msg = None
-#         try:
-#             post_data = request.get_json()
-
-#             firstname = post_data['firstname']
-#         except:
-#             print("error")
-#         finally:
-#             pass
+# Add new comment
+@app.route('/create-comment/', methods=['POST'])
+def add_new_comment():
+    if request.method == "POST":
+        msg = None
+        try:
+            post_data = request.get_json()
+            post_id = post_data['title']
+            msg = post_data['message']
+            poster = post_data['poster']
+         
+            con = sqlite3.connect('database.db')
+            con.row_factory = dict_factory
+            cur = con.cursor()
+            cur.execute("INSERT INTO comments (post_id, comment, comment-poster) VALUES (?, ?, ?)", (post_id, msg, poster))
+            con.commit()
+            msg = "Comment posted succesfully"
+            print(msg)
+        except Exception as e:
+            con.rollback()
+            msg = "Error occurred in comment creation: " + e
+        finally:
+            con.close()
+            return jsonify(msg = msg)
