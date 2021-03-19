@@ -14,7 +14,7 @@ def init_sqlite_db():
     c.execute("CREATE TABLE IF NOT EXISTS posts (post_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, image TEXT, poster TEXT)")
     conn.commit()
 
-    c.execute("CREATE TABLE IF NOT EXISTS comments (comment_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL, comment TEXT, comment-poster TEXT)")
+    c.execute("CREATE TABLE IF NOT EXISTS comments (comment_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL, comment TEXT, comment_poster TEXT)")
     conn.commit()
 
     print("Tables created successfully")
@@ -180,7 +180,7 @@ def add_new_comment():
             con = sqlite3.connect('database.db')
             con.row_factory = dict_factory
             cur = con.cursor()
-            cur.execute("INSERT INTO comments (post_id, comment, comment-poster) VALUES (?, ?, ?)", (post_id, msg, poster))
+            cur.execute("INSERT INTO comments (post_id, comment, comment_poster) VALUES (?, ?, ?)", (post_id, msg, poster))
             con.commit()
             msg = "Comment posted succesfully"
             print(msg)
