@@ -2,8 +2,6 @@ import sqlite3
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
 #create database
 def init_sqlite_db():
     conn = sqlite3.connect('database.db')
@@ -24,7 +22,8 @@ def init_sqlite_db():
     conn.commit()
     
 init_sqlite_db()
-
+app = Flask(__name__)
+CORS(app)
 
 #function to convert database data to dictionary (i think)
 app.config["DEBUG"] = True
